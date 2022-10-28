@@ -1,8 +1,8 @@
 package ru.akirakozov.sd.refactoring;
 
-import javafx.util.Pair;
 import org.junit.*;
 import org.mockito.Mockito;
+import ru.akirakozov.sd.refactoring.model.Product;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,13 +98,13 @@ public class BaseTestCase {
         }
     }
 
-    protected List<Pair<String, Integer>> collectDbOrderedByPrice() {
-        List<Pair<String, Integer>> result = new ArrayList<>();
+    protected List<Product> collectDbOrderedByPrice() {
+        List<Product> result = new ArrayList<>();
         try (ResultSet rs = executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE")) {
             while (rs != null && rs.next()) {
                 String name = rs.getString("name");
                 int price = rs.getInt("price");
-                result.add(new Pair<>(name, price));
+                result.add(new Product(name, price));
             }
         } catch (Exception e) {
             Assert.fail();
@@ -112,12 +112,12 @@ public class BaseTestCase {
         return result;
     }
 
-    protected String buildHtmlForProducts(List<Pair<String, Integer>> products) {
+    protected String buildHtmlForProducts(List<Product> products) {
         StringBuilder sb = new StringBuilder();
-        for (Pair<String, Integer> product : products) {
+        for (Product product : products) {
             sb.append(String.format("%s\t%d</br>\n",
-                    product.getKey(),
-                    product.getValue()));
+                    product.getName(),
+                    product.getPrice()));
         }
         return sb.toString();
     }

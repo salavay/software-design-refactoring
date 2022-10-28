@@ -1,11 +1,11 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
-import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import ru.akirakozov.sd.refactoring.BaseTestCase;
+import ru.akirakozov.sd.refactoring.model.Product;
 
 
 import java.io.IOException;
@@ -24,27 +24,27 @@ public class AddProductServletTest extends BaseTestCase {
 
     @Test
     public void addOneProduct() throws IOException {
-        List<Pair<String, Integer>> productsToTest = new ArrayList<>();
-        productsToTest.add(new Pair<>("product1", 1));
-        for (Pair<String, Integer> product : productsToTest) {
-            doAddRequest(product.getKey(), product.getValue());
+        List<Product> productsToTest = new ArrayList<>();
+        productsToTest.add(new Product("product1", 1));
+        for (Product product : productsToTest) {
+            doAddRequest(product.getName(), product.getPrice());
         }
 
-        List<Pair<String, Integer>> response = collectDbOrderedByPrice();
+        List<Product> response = collectDbOrderedByPrice();
 
         Assert.assertEquals(productsToTest, response);
     }
 
     @Test
     public void addTwoProduct() throws IOException {
-        List<Pair<String, Integer>> productsToTest = new ArrayList<>();
-        productsToTest.add(new Pair<>("product1", 1));
-        productsToTest.add(new Pair<>("product2", 2));
-        for (Pair<String, Integer> product : productsToTest) {
-            doAddRequest(product.getKey(), product.getValue());
+        List<Product> productsToTest = new ArrayList<>();
+        productsToTest.add(new Product("product1", 1));
+        productsToTest.add(new Product("product2", 2));
+        for (Product product : productsToTest) {
+            doAddRequest(product.getName(), product.getPrice());
         }
 
-        List<Pair<String, Integer>> response = collectDbOrderedByPrice();
+        List<Product> response = collectDbOrderedByPrice();
 
         Assert.assertEquals(productsToTest, response);
     }

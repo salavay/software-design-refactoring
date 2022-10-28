@@ -1,10 +1,10 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
-import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ru.akirakozov.sd.refactoring.BaseTestCase;
+import ru.akirakozov.sd.refactoring.model.Product;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,23 +21,23 @@ public class GetProductsServletTest extends BaseTestCase {
 
     @Test
     public void empty() throws IOException {
-        List<Pair<String, Integer>> productsToTest = new ArrayList<>();
+        List<Product> productsToTest = new ArrayList<>();
 
         testForProducts(productsToTest);
     }
 
     @Test
     public void twoProducts() throws IOException {
-        List<Pair<String, Integer>> productsToTest = new ArrayList<>();
-        productsToTest.add(new Pair<>("product1", 1));
-        productsToTest.add(new Pair<>("product2", 2));
+        List<Product> productsToTest = new ArrayList<>();
+        productsToTest.add(new Product("product1", 1));
+        productsToTest.add(new Product("product2", 2));
 
         testForProducts(productsToTest);
     }
 
-    private void testForProducts(List<Pair<String, Integer>> productsToTest) throws IOException {
-        for (Pair<String, Integer> product : productsToTest) {
-            putToDb(product.getKey(), product.getValue());
+    private void testForProducts(List<Product> productsToTest) throws IOException {
+        for (Product product : productsToTest) {
+            putToDb(product.getName(), product.getPrice());
         }
 
         getProductsServlet.doGet(request, response);
@@ -48,7 +48,7 @@ public class GetProductsServletTest extends BaseTestCase {
         Assert.assertEquals(buildHtmlForGet(productsToTest), result);
     }
 
-    private String buildHtmlForGet(List<Pair<String, Integer>> products) {
+    private String buildHtmlForGet(List<Product> products) {
         return buildHtml(buildHtmlForProducts(products));
     }
 }
