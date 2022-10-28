@@ -7,6 +7,7 @@ import ru.akirakozov.sd.refactoring.BaseTestCase;
 import ru.akirakozov.sd.refactoring.model.Product;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class GetProductsServletTest extends BaseTestCase {
     GetProductsServlet getProductsServlet;
 
     @Before
-    public void before() {
+    public void before() throws SQLException {
         getProductsServlet = new GetProductsServlet();
     }
 

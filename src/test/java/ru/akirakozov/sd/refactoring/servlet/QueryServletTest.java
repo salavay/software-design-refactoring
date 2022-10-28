@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import ru.akirakozov.sd.refactoring.BaseTestCase;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class QueryServletTest extends BaseTestCase {
     }
 
     @Before
-    public void before() {
+    public void before() throws SQLException {
         queryServlet = new QueryServlet();
     }
 

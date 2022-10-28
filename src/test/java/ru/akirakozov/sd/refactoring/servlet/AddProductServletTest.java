@@ -7,8 +7,8 @@ import org.mockito.Mockito;
 import ru.akirakozov.sd.refactoring.BaseTestCase;
 import ru.akirakozov.sd.refactoring.model.Product;
 
-
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class AddProductServletTest extends BaseTestCase {
     AddProductServlet addProductServlet;
 
     @Before
-    public void before() {
+    public void before() throws SQLException {
         addProductServlet = new AddProductServlet();
     }
 
