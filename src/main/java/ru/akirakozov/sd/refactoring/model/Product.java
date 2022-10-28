@@ -1,5 +1,7 @@
 package ru.akirakozov.sd.refactoring.model;
 
+import java.util.Objects;
+
 public class Product {
 
     private final String name;
@@ -21,5 +23,18 @@ public class Product {
     @Override
     public String toString() {
         return "name: " + name + " price: " + price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+        Product product = (Product) o;
+        return getPrice() == product.getPrice() && Objects.equals(getName(), product.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getPrice());
     }
 }

@@ -1,12 +1,14 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.model.Product;
+import ru.akirakozov.sd.refactoring.utils.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author akirakozov
@@ -20,14 +22,13 @@ public class GetProductsServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.getWriter().println("<html><body>");
 
         List<Product> products = productDAO.getAll();
-        for (Product product : products) {
-            response.getWriter().println(product.getName() + "\t" + product.getPrice() + "</br>");
-        }
 
-        response.getWriter().println("</body></html>");
+        response.getWriter().println(HtmlUtils.buildHtml(
+                products.stream().map(HtmlUtils::productToHtml)
+                        .collect(Collectors.joining())
+        ));
 
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
