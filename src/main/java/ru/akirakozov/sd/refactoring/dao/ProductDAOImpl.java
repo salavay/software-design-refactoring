@@ -2,10 +2,7 @@ package ru.akirakozov.sd.refactoring.dao;
 
 import ru.akirakozov.sd.refactoring.model.Product;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +16,9 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     private void update(String query) throws SQLException {
-        connection.createStatement().execute(query);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(query);
+        }
     }
 
     @Override
@@ -97,20 +96,24 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     private <T> T selectRow(String query, RowGetter<T> rg) throws SQLException {
-        try (ResultSet rs = connection.createStatement().executeQuery(query)) {
-            if (rs != null && rs.next()) {
-                return rg.apply(rs);
-            } else {
-                throw new SQLException();
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet rs = statement.executeQuery(query)) {
+                if (rs != null && rs.next()) {
+                    return rg.apply(rs);
+                } else {
+                    throw new SQLException();
+                }
             }
         }
     }
 
     private <T> List<T> selectRows(String query, RowGetter<T> rg) throws SQLException {
         List<T> result = new ArrayList<>();
-        try (ResultSet rs = connection.createStatement().executeQuery(query)) {
-            while (rs != null && rs.next()) {
-                result.add(rg.apply(rs));
+        try(Statement statement = connection.createStatement()) {
+            try (ResultSet rs = statement.executeQuery(query)) {
+                while (rs != null && rs.next()) {
+                    result.add(rg.apply(rs));
+                }
             }
         }
         return result;

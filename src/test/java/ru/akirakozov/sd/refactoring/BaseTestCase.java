@@ -9,16 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// fixme: use Product.class after refactoring
 public class BaseTestCase {
     protected static Connection connection;
+    private final static String DATASOURCE = "jdbc:sqlite:test.db";
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected StringWriter stringWriter;
@@ -26,7 +23,7 @@ public class BaseTestCase {
     @BeforeClass
     public static void setUp() {
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:test.db");
+            connection = DriverManager.getConnection(DATASOURCE);
         } catch (SQLException e) {
             Assert.fail("Failed to create DB");
         }
@@ -81,18 +78,9 @@ public class BaseTestCase {
         execute("delete from PRODUCT where 1=1");
     }
 
-    protected static ResultSet executeQuery(String query) {
-        try {
-            return connection.createStatement().executeQuery(query);
-        } catch (SQLException e) {
-            Assert.fail("Failed to execute query: " + query + "\n" + e.getMessage());
-        }
-        return null;
-    }
-
     protected static void execute(String query) {
-        try {
-            connection.createStatement().execute(query);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(query);
         } catch (SQLException e) {
             Assert.fail("Failed to execute query: " + query + "\n" + e.getMessage());
         }
@@ -100,11 +88,13 @@ public class BaseTestCase {
 
     protected List<Product> collectDbOrderedByPrice() {
         List<Product> result = new ArrayList<>();
-        try (ResultSet rs = executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE")) {
-            while (rs != null && rs.next()) {
-                String name = rs.getString("name");
-                int price = rs.getInt("price");
-                result.add(new Product(name, price));
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet rs = statement.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE")) {
+                while (rs != null && rs.next()) {
+                    String name = rs.getString("name");
+                    int price = rs.getInt("price");
+                    result.add(new Product(name, price));
+                }
             }
         } catch (Exception e) {
             Assert.fail();
